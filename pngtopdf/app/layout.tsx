@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     siteName: "ConvertPNGtoPDF",
     images: [
       {
-        url: "https://convertpngtopdf.com/og-image.png", // Replace with your actual OG image (1200x630px recommended)
+        url: "https://convertpngtopdf.com/og-image.png",
         width: 1200,
         height: 630,
         alt: "Convert PNG to PDF Online Free - ConvertPNGtoPDF Tool",
@@ -49,8 +49,8 @@ export const metadata: Metadata = {
     title: "Convert PNG to PDF Online Free | ConvertPNGtoPDF",
     description:
       "Transform PNGs to PDFs instantly with ConvertPNGtoPDF—free, fast, and secure!",
-    images: ["https://convertpngtopdf.com/og-image.png"], // Replace with your actual Twitter image
-    creator: "@YourTwitterHandle", // Replace with your Twitter handle (optional)
+    images: ["https://convertpngtopdf.com/og-image.png"],
+    creator: "@YourTwitterHandle",
   },
   robots: {
     index: true,
@@ -67,7 +67,7 @@ export const metadata: Metadata = {
     canonical: "https://convertpngtopdf.com",
   },
   viewport: "width=device-width, initial-scale=1.0",
-  charset: "UTF-8",
+  // Removed 'charset' from metadata
 };
 
 export default function RootLayout({
@@ -78,13 +78,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <meta charSet="UTF-8" /> {/* Moved charset to a meta tag */}
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`} // Fixed syntax error in className
-      >
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {children}
       </body>
     </html>

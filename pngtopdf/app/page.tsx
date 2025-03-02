@@ -76,7 +76,7 @@ export default function Component() {
       name: 'Ethan',
       text: 'I used it on my phone while traveling—worked flawlessly. Best PNG-to-PDF tool out there!',
       handle: '@ethan_travels',
-      imageSrc: 'https://picsum.photos/100/100.webp?random=8', // Fixed incorrect URL
+      imageSrc: 'https://picsum.photos/100/100.webp?random=8',
     },
     {
       name: 'Sophie',
@@ -155,7 +155,7 @@ export default function Component() {
       return () => {
         newPreviews.forEach(url => URL.revokeObjectURL(url));
       };
-    }, [files]);
+    }, [files, previews]); // Added 'previews' to the dependency array
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const selectedFiles = Array.from(e.target.files || []).filter(file => file.type === 'image/png');
@@ -299,6 +299,7 @@ export default function Component() {
                   key={index}
                   className="relative group w-20 sm:w-24 h-20 sm:h-24 rounded-lg bg-white/80 shadow-md overflow-hidden hover:shadow-lg transition-all duration-300"
                 >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={previews[index]}
                     alt={file.name}
