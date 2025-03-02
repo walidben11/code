@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     "Learn how to convert PNG to PDF online for free with ConvertPNGtoPDF. Our easy PNG to PDF converter lets you transform images into PDFs in seconds—no software needed!",
   keywords: [
     "png to pdf",
-    "convert png to pdf",
+    "convertt png to pdf",
     "png to pdf converter",
     "how to convert png to pdf",
     "free png to pdf tool",
