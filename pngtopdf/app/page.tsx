@@ -76,7 +76,7 @@ export default function Component() {
       name: 'Ethan',
       text: 'I used it on my phone while traveling—worked flawlessly. Best PNG-to-PDF tool out there!',
       handle: '@ethan_travels',
-      imageSrc: 'https://picsum.photos/100/100.webp?random=8',
+      imageSrc: 'https://picsum.photos/100/100.webp?random=8', // Fixed incorrect URL
     },
     {
       name: 'Sophie',
@@ -147,7 +147,7 @@ export default function Component() {
     const [error, setError] = useState<string | null>(null);
     const [isDragging, setIsDragging] = useState(false);
     const [converting, setConverting] = useState(false);
-
+  
     useEffect(() => {
       previews.forEach(url => URL.revokeObjectURL(url));
       const newPreviews = files.map(file => URL.createObjectURL(file));
@@ -155,8 +155,8 @@ export default function Component() {
       return () => {
         newPreviews.forEach(url => URL.revokeObjectURL(url));
       };
-    }, [files, previews]); // Added 'previews' to the dependency array
-
+    }, [files]);
+  
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const selectedFiles = Array.from(e.target.files || []).filter(file => file.type === 'image/png');
       if (selectedFiles.length === 0) {
@@ -168,7 +168,7 @@ export default function Component() {
       setPdfUrl(null);
       setConverting(false);
     };
-
+  
     const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
       e.preventDefault();
       setIsDragging(false);
@@ -182,31 +182,31 @@ export default function Component() {
       setPdfUrl(null);
       setConverting(false);
     };
-
+  
     const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
       e.preventDefault();
       setIsDragging(true);
     };
-
+  
     const handleDragLeave = () => {
       setIsDragging(false);
     };
-
+  
     const convertToPdf = async () => {
       setConverting(true);
       setError(null);
       setPdfUrl(null);
-
+  
       try {
         const pdfDoc = await PDFDocument.create();
-
+  
         for (const file of files) {
           const arrayBuffer = await file.arrayBuffer();
           const pngImage = await pdfDoc.embedPng(arrayBuffer);
           const page = pdfDoc.addPage([pngImage.width, pngImage.height]);
           page.drawImage(pngImage, { x: 0, y: 0, width: pngImage.width, height: pngImage.height });
         }
-
+  
         const pdfBytes = await pdfDoc.save();
         const blob = new Blob([pdfBytes], { type: 'application/pdf' });
         const url = URL.createObjectURL(blob);
@@ -218,12 +218,12 @@ export default function Component() {
         setConverting(false);
       }
     };
-
+  
     const removeFile = (index: number) => {
       const newFiles = files.filter((_, i) => i !== index);
       setFiles(newFiles);
     };
-
+  
     const clearQueue = () => {
       setFiles([]);
       setPreviews([]);
@@ -231,7 +231,7 @@ export default function Component() {
       setError(null);
       setConverting(false);
     };
-
+  
     return (
       <div id="convert" className="w-full max-w-3xl mx-auto mt-10 p-4 sm:p-6 md:p-10 rounded-2xl bg-white/90 backdrop-blur-xl border border-gray-100/30 shadow-2xl">
         <div
@@ -246,7 +246,7 @@ export default function Component() {
         >
           <div className="absolute inset-0 rounded-xl border-2 border-transparent bg-gradient-to-r from-blue-400/20 via-blue-500/20 to-blue-600/20 pointer-events-none" />
           <div className="absolute inset-0 rounded-xl shadow-inner shadow-gray-200/50 pointer-events-none" />
-
+  
           <label htmlFor="file-upload" className="cursor-pointer relative z-10">
             <div className="relative mx-auto h-16 sm:h-20 w-16 sm:w-20 mb-4 sm:mb-6">
               <svg
@@ -269,7 +269,7 @@ export default function Component() {
                 <div className="absolute inset-0 rounded-full bg-blue-200/40 blur-xl animate-pulse" />
               )}
             </div>
-
+  
             <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800 tracking-tight">
               {files.length > 0
                 ? `${files.length} PNG(s) Ready to Convert`
@@ -290,7 +290,7 @@ export default function Component() {
             />
           </label>
         </div>
-
+  
         {files.length > 0 && (
           <div className="mt-4 sm:mt-6 rounded-lg bg-gray-50/50 p-4">
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 max-h-48 overflow-y-auto">
@@ -299,7 +299,6 @@ export default function Component() {
                   key={index}
                   className="relative group w-20 sm:w-24 h-20 sm:h-24 rounded-lg bg-white/80 shadow-md overflow-hidden hover:shadow-lg transition-all duration-300"
                 >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={previews[index]}
                     alt={file.name}
@@ -322,11 +321,11 @@ export default function Component() {
             </div>
           </div>
         )}
-
+  
         {error && (
           <p className="text-red-500 mt-4 text-center text-sm font-medium">{error}</p>
         )}
-
+  
         {converting && (
           <div className="mt-4">
             <div className="w-full bg-gray-200 rounded-full h-2.5">
@@ -338,7 +337,7 @@ export default function Component() {
             <p className="text-gray-600 text-sm text-center mt-2">Converting...</p>
           </div>
         )}
-
+  
         <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row gap-4">
           <Button
             onClick={clearQueue}
@@ -367,7 +366,7 @@ export default function Component() {
             </Button>
           )}
         </div>
-
+  
         {pdfUrl && !converting && (
           <Button
             asChild

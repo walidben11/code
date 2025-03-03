@@ -45,7 +45,7 @@ body {
 }
 
 .animate-progress {
-  animation: progress 50s ease-in-out infinite; /* Changed from 2s to 5s */
+  animation: progress 5s ease-in-out infinite; /* Changed from 2s to 5s */
 }
 
 .animate-pulse {
