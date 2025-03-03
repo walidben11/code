@@ -76,7 +76,7 @@ export default function Component() {
       name: 'Ethan',
       text: 'I used it on my phone while traveling—worked flawlessly. Best PNG-to-PDF tool out there!',
       handle: '@ethan_travels',
-      imageSrc: 'https://picsum.photos/100/100.webp?random=8', // Fixed incorrect URL
+      imageSrc: 'https://picsum.photos/100/100.webp?random=8',
     },
     {
       name: 'Sophie',
@@ -147,7 +147,8 @@ export default function Component() {
     const [error, setError] = useState<string | null>(null);
     const [isDragging, setIsDragging] = useState(false);
     const [converting, setConverting] = useState(false);
-  
+    const [debugInfo, setDebugInfo] = useState<string[]>([]); // For debugging on mobile
+
     useEffect(() => {
       previews.forEach(url => URL.revokeObjectURL(url));
       const newPreviews = files.map(file => URL.createObjectURL(file));
@@ -155,93 +156,153 @@ export default function Component() {
       return () => {
         newPreviews.forEach(url => URL.revokeObjectURL(url));
       };
-    }, [files]);
-  
+    }, [files, previews]);
+
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const selectedFiles = Array.from(e.target.files || []).filter(file => file.type === 'image/png');
       if (selectedFiles.length === 0) {
         setError('Please upload only PNG files.');
+        setDebugInfo(['No PNG files selected']);
+        return;
+      }
+      // Limit the number of files to prevent memory issues on mobile
+      if (selectedFiles.length > 10) {
+        setError('Please upload a maximum of 10 PNG files at a time on mobile devices.');
+        setDebugInfo(['Too many files selected']);
+        return;
+      }
+      // Check file size (e.g., limit to 5MB per file)
+      const oversizedFiles = selectedFiles.filter(file => file.size > 5 * 1024 * 1024);
+      if (oversizedFiles.length > 0) {
+        setError('Some files are too large. Please upload PNG files smaller than 5MB.');
+        setDebugInfo(['Files too large']);
         return;
       }
       setFiles(selectedFiles);
       setError(null);
+      setDebugInfo(['Files selected successfully']);
       setPdfUrl(null);
       setConverting(false);
     };
-  
+
     const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
       e.preventDefault();
       setIsDragging(false);
       const droppedFiles = Array.from(e.dataTransfer.files).filter(file => file.type === 'image/png');
       if (droppedFiles.length === 0) {
         setError('Please drop only PNG files.');
+        setDebugInfo(['Dropped files are not PNG']);
+        return;
+      }
+      // Limit the number of files
+      if (droppedFiles.length > 10) {
+        setError('Please drop a maximum of 10 PNG files at a time on mobile devices.');
+        setDebugInfo(['Too many dropped files']);
+        return;
+      }
+      // Check file size
+      const oversizedFiles = droppedFiles.filter(file => file.size > 5 * 1024 * 1024);
+      if (oversizedFiles.length > 0) {
+        setError('Some dropped files are too large. Please drop PNG files smaller than 5MB.');
+        setDebugInfo(['Dropped files too large']);
         return;
       }
       setFiles(droppedFiles);
       setError(null);
+      setDebugInfo(['Files dropped successfully']);
       setPdfUrl(null);
       setConverting(false);
     };
-  
+
     const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
       e.preventDefault();
       setIsDragging(true);
     };
-  
+
     const handleDragLeave = () => {
       setIsDragging(false);
     };
-  
+
     const convertToPdf = async () => {
       setConverting(true);
       setError(null);
       setPdfUrl(null);
-  
+      setDebugInfo(['Starting conversion']);
+
       try {
+        setDebugInfo(prev => [...prev, 'Creating PDF document']);
         const pdfDoc = await PDFDocument.create();
-  
-        for (const file of files) {
+
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          setDebugInfo(prev => [...prev, `Processing file ${i + 1}/${files.length}: ${file.name}`]);
+          
+          // Read the file as an ArrayBuffer
           const arrayBuffer = await file.arrayBuffer();
+          setDebugInfo(prev => [...prev, `File ${file.name} read as ArrayBuffer`]);
+
+          // Embed the PNG image
           const pngImage = await pdfDoc.embedPng(arrayBuffer);
+          setDebugInfo(prev => [...prev, `File ${file.name} embedded as PNG`]);
+
+          // Add a page with the image's dimensions
           const page = pdfDoc.addPage([pngImage.width, pngImage.height]);
           page.drawImage(pngImage, { x: 0, y: 0, width: pngImage.width, height: pngImage.height });
+          setDebugInfo(prev => [...prev, `File ${file.name} drawn on page`]);
         }
-  
+
+        setDebugInfo(prev => [...prev, 'Saving PDF']);
         const pdfBytes = await pdfDoc.save();
+        setDebugInfo(prev => [...prev, 'PDF saved']);
+
+        // Create a Blob for the PDF
         const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+        setDebugInfo(prev => [...prev, 'Blob created']);
+
+        // Create a URL for the Blob
         const url = URL.createObjectURL(blob);
+        setDebugInfo(prev => [...prev, 'URL created for Blob']);
         setPdfUrl(url);
       } catch (err) {
-        setError('Failed to convert files to PDF. Please try again.');
-        console.error(err);
+        const errorMsg = err instanceof Error ? err.message : String(err);
+        setError(`Failed to convert files to PDF. Please try again. Error: ${errorMsg}`);
+        setDebugInfo(prev => [...prev, `Error during conversion: ${errorMsg}`]);
+        console.error('Conversion error:', err);
       } finally {
         setConverting(false);
       }
     };
-  
+
     const removeFile = (index: number) => {
       const newFiles = files.filter((_, i) => i !== index);
       setFiles(newFiles);
+      setDebugInfo(prev => [...prev, `Removed file at index ${index}`]);
     };
-  
+
     const clearQueue = () => {
       setFiles([]);
       setPreviews([]);
       setPdfUrl(null);
       setError(null);
+      setDebugInfo(prev => [...prev, 'Queue cleared']);
       setConverting(false);
     };
-    const downloadPdf = (url: string, filename: string) => {
+
+    // Function to trigger download on mobile devices
+    const handleDownload = () => {
+      if (!pdfUrl) return;
+      setDebugInfo(prev => [...prev, 'Initiating download']);
+      
+      // Create a temporary anchor element for download
       const link = document.createElement('a');
-      link.href = url;
-      link.download = filename;
+      link.href = pdfUrl;
+      link.download = 'converted.pdf';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      setDebugInfo(prev => [...prev, 'Download triggered']);
     };
 
-
-  
     return (
       <div id="convert" className="w-full max-w-3xl mx-auto mt-10 p-4 sm:p-6 md:p-10 rounded-2xl bg-white/90 backdrop-blur-xl border border-gray-100/30 shadow-2xl">
         <div
@@ -256,7 +317,7 @@ export default function Component() {
         >
           <div className="absolute inset-0 rounded-xl border-2 border-transparent bg-gradient-to-r from-blue-400/20 via-blue-500/20 to-blue-600/20 pointer-events-none" />
           <div className="absolute inset-0 rounded-xl shadow-inner shadow-gray-200/50 pointer-events-none" />
-  
+
           <label htmlFor="file-upload" className="cursor-pointer relative z-10">
             <div className="relative mx-auto h-16 sm:h-20 w-16 sm:w-20 mb-4 sm:mb-6">
               <svg
@@ -279,7 +340,7 @@ export default function Component() {
                 <div className="absolute inset-0 rounded-full bg-blue-200/40 blur-xl animate-pulse" />
               )}
             </div>
-  
+
             <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800 tracking-tight">
               {files.length > 0
                 ? `${files.length} PNG(s) Ready to Convert`
@@ -300,7 +361,7 @@ export default function Component() {
             />
           </label>
         </div>
-  
+
         {files.length > 0 && (
           <div className="mt-4 sm:mt-6 rounded-lg bg-gray-50/50 p-4">
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 max-h-48 overflow-y-auto">
@@ -309,6 +370,7 @@ export default function Component() {
                   key={index}
                   className="relative group w-20 sm:w-24 h-20 sm:h-24 rounded-lg bg-white/80 shadow-md overflow-hidden hover:shadow-lg transition-all duration-300"
                 >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={previews[index]}
                     alt={file.name}
@@ -331,11 +393,11 @@ export default function Component() {
             </div>
           </div>
         )}
-  
+
         {error && (
           <p className="text-red-500 mt-4 text-center text-sm font-medium">{error}</p>
         )}
-  
+
         {converting && (
           <div className="mt-4">
             <div className="w-full bg-gray-200 rounded-full h-2.5">
@@ -347,7 +409,19 @@ export default function Component() {
             <p className="text-gray-600 text-sm text-center mt-2">Converting...</p>
           </div>
         )}
-  
+
+        {/* Debug information for mobile */}
+        {debugInfo.length > 0 && (
+          <div className="mt-4 text-sm text-gray-500">
+            <p>Debug Info:</p>
+            <ul className="list-disc pl-5">
+              {debugInfo.map((info, index) => (
+                <li key={index}>{info}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row gap-4">
           <Button
             onClick={clearQueue}
@@ -376,15 +450,15 @@ export default function Component() {
             </Button>
           )}
         </div>
-  
+
         {pdfUrl && !converting && (
           <Button
+            onClick={handleDownload}
             className="w-full mt-4 sm:mt-6 bg-gradient-to-r from-blue-600 to-blue-500 text-white py-3 sm:py-4 px-4 sm:px-6 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center gap-2 font-semibold text-base sm:text-lg"
-            onClick={() => downloadPdf(pdfUrl, 'converted.pdf')}
           >
-          <DownloadIcon className="w-4 sm:w-5 h-4 sm:h-5" />
-           Download Your PDF
-        </Button>
+            <DownloadIcon className="w-4 sm:w-5 h-4 sm:h-5" />
+            Download Your PDF
+          </Button>
         )}
       </div>
     );
