@@ -231,6 +231,16 @@ export default function Component() {
       setError(null);
       setConverting(false);
     };
+    const downloadPdf = (url: string, filename: string) => {
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    };
+
+
   
     return (
       <div id="convert" className="w-full max-w-3xl mx-auto mt-10 p-4 sm:p-6 md:p-10 rounded-2xl bg-white/90 backdrop-blur-xl border border-gray-100/30 shadow-2xl">
@@ -369,14 +379,12 @@ export default function Component() {
   
         {pdfUrl && !converting && (
           <Button
-            asChild
             className="w-full mt-4 sm:mt-6 bg-gradient-to-r from-blue-600 to-blue-500 text-white py-3 sm:py-4 px-4 sm:px-6 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center gap-2 font-semibold text-base sm:text-lg"
+            onClick={() => downloadPdf(pdfUrl, 'converted.pdf')}
           >
-            <a href={pdfUrl} download="converted.pdf">
-              <DownloadIcon className="w-4 sm:w-5 h-4 sm:h-5" />
-              Download Your PDF
-            </a>
-          </Button>
+          <DownloadIcon className="w-4 sm:w-5 h-4 sm:h-5" />
+           Download Your PDF
+        </Button>
         )}
       </div>
     );
