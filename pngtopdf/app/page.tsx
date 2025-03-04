@@ -2,32 +2,16 @@
 
 import { useState, useEffect } from 'react';
 import { LandingPrimaryVideoCtaSection } from '@/components/landing/cta/LandingPrimaryCta';
-import { LandingSocialProof } from '@/components/landing/social-proof/LandingSocialProof';
+
 import { LandingSocialProofBand } from '@/components/landing/social-proof/LandingSocialProofBand';
 import { LandingSocialProofBandItem } from '@/components/landing/social-proof/LandingSocialProofBandItem';
 import { LandingFaqCollapsibleSection } from '@/components/landing/LandingFaqCollapsible';
-import { LandingTestimonialGrid } from '@/components/landing/testimonial/LandingTestimonialGrid';
-import { LandingTestimonialReadMoreWrapper } from '@/components/landing/testimonial/LandingTestimonialReadMoreWrapper';
+
 import { Button } from '@/components/shared/ui/button';
 import { colors } from '@/data/config/colors';
 import { PDFDocument } from 'pdf-lib';
 
 export default function Component() {
-  const avatarItems = [
-    {
-      imageSrc: 'https://picsum.photos/id/64/100/100',
-      name: 'John Doe',
-    },
-    {
-      imageSrc: 'https://picsum.photos/id/65/100/100',
-      name: 'Jane Doe',
-    },
-    {
-      imageSrc: 'https://picsum.photos/id/669/100/100',
-      name: 'Alice Doe',
-    },
-  ];
-
   
 
   const faqItems = [
@@ -411,7 +395,7 @@ export default function Component() {
           </p>
         }
       >
-        
+       
         <Converter />
       </LandingPrimaryVideoCtaSection>
 
