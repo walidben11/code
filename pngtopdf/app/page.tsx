@@ -28,69 +28,7 @@ export default function Component() {
     },
   ];
 
-  const testimonialItems = [
-    {
-      name: 'Mathew',
-      text: 'Converted my PNGs to PDF in seconds—so fast and easy!',
-      handle: '@heymatt_oo',
-      imageSrc: 'https://picsum.photos/100/100.webp?random=2',
-    },
-    {
-      name: 'Joshua',
-      text: 'Super simple to use. Uploaded my images, clicked convert, and done!',
-      handle: '@joshua',
-      imageSrc: 'https://picsum.photos/100/100.webp?random=3',
-    },
-    {
-      name: 'Parl Coppa',
-      text: 'I sent the link to my team, and they converted dozens of files effortlessly. Amazing tool!',
-      handle: '@coppalipse',
-      imageSrc: 'https://picsum.photos/100/100.webp?random=1',
-      featured: true,
-    },
-    {
-      name: 'Mandy',
-      text: 'Love how quick and reliable this PNG-to-PDF converter is. Saved me so much time!',
-      handle: '@mandy',
-      imageSrc: 'https://picsum.photos/100/100.webp?random=4',
-    },
-    {
-      name: 'Alex',
-      text: 'Found this while searching for a free converter. It’s straightforward and works perfectly!',
-      handle: '@alex',
-      imageSrc: 'https://picsum.photos/100/100.webp?random=5',
-    },
-    {
-      name: 'Sam',
-      text: 'Tried a few tools before this one. ConvertPNGtoPDF is by far the easiest and most intuitive.',
-      handle: '@sama',
-      imageSrc: 'https://picsum.photos/100/100.webp?random=6',
-    },
-    {
-      name: 'Lydia',
-      text: 'As a student, I needed to convert lecture slides to PDF. This tool made it so easy and fast!',
-      handle: '@lydiawrites',
-      imageSrc: 'https://picsum.photos/100/100.webp?random=7',
-    },
-    {
-      name: 'Ethan',
-      text: 'I used it on my phone while traveling—worked flawlessly. Best PNG-to-PDF tool out there!',
-      handle: '@ethan_travels',
-      imageSrc: 'https://picsum.photos/100/100.webp?random=8',
-    },
-    {
-      name: 'Sophie',
-      text: 'This converter saved my presentation prep. Uploaded 15 PNGs, and got a single PDF in no time!',
-      handle: '@sophie_designs',
-      imageSrc: 'https://picsum.photos/100/100.webp?random=9',
-    },
-    {
-      name: 'Noah',
-      text: 'No downloads, no hassle—just a clean, free tool that works every time. Highly recommend!',
-      handle: '@noah_codes',
-      imageSrc: 'https://picsum.photos/100/100.webp?random=10',
-    },
-  ];
+  
 
   const faqItems = [
     {
