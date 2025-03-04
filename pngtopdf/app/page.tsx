@@ -473,27 +473,11 @@ export default function Component() {
           </p>
         }
       >
-        <LandingSocialProof
-          className="w-full mt-6 justify-center"
-          showRating
-          numberOfUsers={15000}
-          suffixText="happy users"
-          avatarItems={avatarItems}
-          size="large"
-          disableAnimation
-        />
+        
         <Converter />
       </LandingPrimaryVideoCtaSection>
 
-      <LandingTestimonialReadMoreWrapper size="md">
-        <LandingTestimonialGrid
-          title="Loved by Users Worldwide"
-          description="Join 15,000+ users who rely on ConvertPNGtoPDF for fast, hassle-free conversions."
-          testimonialItems={testimonialItems}
-          withBackgroundGlow
-          withBackground
-        />
-      </LandingTestimonialReadMoreWrapper>
+      
 
       <LandingFaqCollapsibleSection
         title="Frequently Asked Questions About PNG to PDF Conversion"

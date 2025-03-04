@@ -67,6 +67,17 @@ export const metadata: Metadata = {
     canonical: "https://convertpngtopdf.com",
   },
   viewport: "width=device-width, initial-scale=1.0",
+  icons: {
+    icon: [
+      { url: "/favicon.ico" }, // Primary favicon
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" }, // Optional: 16x16 favicon
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" }, // Optional: 32x32 favicon
+    ],
+  },
+
+
+
+
 };
 
 export default function RootLayout({
